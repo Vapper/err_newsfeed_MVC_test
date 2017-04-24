@@ -9,7 +9,7 @@ $validCache = false;
 if (file_exists('cache/rss_cache_time.txt')) {
     $contents = file_get_contents('cache/rss_cache_time.txt');
     $data = unserialize($contents);
-    if (time() - $data['created'] < 24 * 60 * 60) {
+    if (time() - $data['created'] < 5 * 60) {
         $validCache = true;
         $doc->load('cache/cache.xml');
     }else{
@@ -21,13 +21,11 @@ if (file_exists('cache/rss_cache_time.txt')) {
 }
 
 if (!$validCache) {
-    $data = array('created' => time());
-
     $dom = new DOMDocument;
-    $dom->preserveWhiteSpace = TRUE;
     $dom->load('http://err.ee/rss');
     $dom->save('cache/cache.xml');
 
+    $data = array('created' => time());
     file_put_contents('cache/rss_cache_time.txt', serialize($data));
 }
 
